@@ -102,9 +102,10 @@ runs:
               python -m uv venv
               python -m uv pip install ${{ github.workspace }}/dist/*.tar.gz --target .venv/lib/*/site-packages/
               set +e
-              bash -c "
+              cat > /tmp/_test_script.sh << 'ENDOFSCRIPT'
               ${{ inputs.test-script }}
-              "
+              ENDOFSCRIPT
+              bash /tmp/_test_script.sh
               if [ "$?" -eq 0 ]
               then
                   echo result=true >> $GITHUB_OUTPUT
@@ -123,9 +124,10 @@ runs:
               python -m uv venv
               python -m uv pip install ${{ github.workspace }}/dist/*.whl --target .venv/lib/*/site-packages/
               set +e
-              bash -c "
+              cat > /tmp/_test_script.sh << 'ENDOFSCRIPT'
               ${{ inputs.test-script }}
-              "
+              ENDOFSCRIPT
+              bash /tmp/_test_script.sh
               if [ "$?" -eq 0 ]
               then
                   echo result=true >> $GITHUB_OUTPUT
