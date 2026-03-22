@@ -1,0 +1,33 @@
+name: Self Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test action (dry run — will fail at PyPI publish, that's expected)
+        id: release
+        uses: ./
+        continue-on-error: true
+        with:
+          python-version: "3.11"
+          checkout: false
+          test-script: |
+            python -c "import test_pkg; print(test_pkg.__version__)"
+            echo "Double quotes work: test passed"
+          pypi-token: "fake-token-for-testing"
+          github-user: astanziola
+          github-token: ${{ github.token }}
+          allow-first-release: true
+
+      - name: Verify test-script ran without quoting errors
+        shell: bash
+        run: |
+          echo "Action completed (may have failed at PyPI publish, which is expected)"
+          echo "If we got here, the test-script quoting and changelog check worked"

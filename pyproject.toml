@@ -1,0 +1,12 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "action-update-python-project-test"
+version = "0.0.1"
+description = "Test package for action self-test"
+requires-python = ">=3.11"
+
+[tool.hatch.build.targets.wheel]
+packages = ["test_pkg"]
