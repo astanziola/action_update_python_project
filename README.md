@@ -67,11 +67,12 @@ The following are optional arguments that come with a default value:
 - `pypi-repository-url`: What PyPI repository to use. Defaults to `'https://pypi.org/'`
 - `checkout`: Whether to check out the repository. Set to `false` to disable this if you've already done this in an earlier step.
 - `allow-first-release`: Whether to allow a first release to PyPI. Defaults to `false`, to avoid accidentally pushing code publicly until you're ready. (We generally recommend pushing a first release manually when you're ready, but this flag can be useful if you're pushing to an internal PyPI repository that only your CD has authentication for.)
+- `check-changelog`: Whether to verify that `CHANGELOG.md` has an entry for the version being released. Defaults to `true`. Set to `false` to disable.
 
 Notes on `test-script`:
 
 - It runs in a temporary directory. Thus you will need to copy your tests over as in the example above. This is to avoid spuriously passing tests: it can happen that files have been incorrectly left out of the sdist/wheel, but are still available through the repository itself.
-- Any `"` characters must be escaped as `\"`.
+- Double quotes and other special characters are supported without escaping (the script is written to a temp file, not passed via `bash -c`).
 - The exit code of this script is used to determine whether the tests count as having passed or not. `0` is a pass; everything else is a failure.
 - The code from your library will have been installed into a fresh virtual environment at `./.venv` using `uv pip install`. The `uv sync` command in the example above is the appropriate invocation to install the `dev` extras from copied `pyproject.toml`, *without* also overwriting the existing install, and *without* removing the existing install.
 
