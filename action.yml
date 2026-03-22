@@ -31,6 +31,9 @@ inputs:
     allow-first-release:
         description: 'Whether to allow doing a first release to PyPI for a package that does not already exist there. Set to `true` to allow this.'
         default: false
+    check-changelog:
+        description: 'Whether to verify that CHANGELOG.md has an entry for the version being released. Set to `false` to disable.'
+        default: true
 branding:
     icon: 'wind'
     color: 'yellow'
@@ -92,6 +95,17 @@ runs:
               print(f'Setting tag=v{checkout_version}')
               print(f'Setting new-version={new_version}')
               "
+
+        - name: Check changelog
+          if: (steps.get-versions.outputs.new-version == 'true') && (inputs.check-changelog != 'false')
+          shell: bash
+          run: |
+              version=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml)
+              if ! grep -q "\[$version\]" CHANGELOG.md; then
+                echo "::error::CHANGELOG.md has no entry for version $version. Run: kacl-cli release $version --modify --auto-link"
+                exit 1
+              fi
+              echo "CHANGELOG.md has entry for version $version"
 
         - name: Test sdist
           id: test-sdist
