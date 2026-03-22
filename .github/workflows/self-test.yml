@@ -19,7 +19,7 @@ jobs:
           python-version: "3.11"
           checkout: false
           test-script: |
-            python -c "import test_pkg; print(test_pkg.__version__)"
+            uv run --no-sync python -c "import test_pkg; print(test_pkg.__version__)"
             echo "Double quotes work: test passed"
           pypi-token: "fake-token-for-testing"
           github-user: astanziola
